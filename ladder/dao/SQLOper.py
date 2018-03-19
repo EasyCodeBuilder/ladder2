@@ -25,25 +25,29 @@ class SQLOper:
 
             results = cur.fetchall()  # 获取查询的所有记录
 
+            print(results)
+
         except Exception as e:
             raise e
         finally:
             self.closeDB()
             return results
-    def executeInsertSql(self,pattern,value):
+
+    def executeInsertSql(self,table,pattern,value):
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql="insert into tbl_user ()values()"
+            sql="insert into %s (%s)values(%s)"%(table,pattern,value)
             cur.execute(sql)  # 执行sql语句
-
-            results = cur.fetchall()  # 获取查询的所有记录
-
+            self.db.commit()
+            return True
         except Exception as e:
+            self.db.rollback()
+            return False
             raise e
         finally:
             self.closeDB()
-            return results
+
 
     def executeDelectSql(self,sql):
         self.getDB()
@@ -71,5 +75,9 @@ class SQLOper:
         except Exception as e:
             raise e
         finally:
-            db.close()
+            self.closeDB()
             return results
+
+if __name__=='__main__':
+    sqloper=SQLOper()
+    sql=sqloper.executeSql("select *from tbl_usr")
