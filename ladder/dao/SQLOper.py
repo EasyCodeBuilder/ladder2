@@ -25,19 +25,70 @@ class SQLOper:
 
             results = cur.fetchall()  # 获取查询的所有记录
 
-            print(results)
-
         except Exception as e:
             raise e
         finally:
             self.closeDB()
             return results
 
+    def executeSelectAll(self, table):
+        self.getDB()
+        cur = self.db.cursor()
+        try:
+            sql = "select * from %s " % (table)
+            print(sql)
+            cur.execute(sql)  # 执行sql语句
+            results = cur.fetchall()  # 获取查询的所有记录
+
+            return results
+        except Exception as e:
+            self.db.rollback()
+            return False
+            raise e
+        finally:
+            self.closeDB()
+
+
+    def executeSelectCondition1(self, table, param, value):
+        self.getDB()
+        cur = self.db.cursor()
+        try:
+            sql = "select * from %s where %s=%s" % (table, param, value)
+            print(sql)
+            cur.execute(sql)  # 执行sql语句
+            results = cur.fetchall()  # 获取查询的所有记录
+
+            return results
+        except Exception as e:
+            self.db.rollback()
+            return False
+            raise e
+        finally:
+            self.closeDB()
+
+    def executeSelectCondition2(self,param1,value1,param2,value2):
+        self.getDB()
+        cur = self.db.cursor()
+        try:
+            sql = "select * from %s where %s=%s" % (table, param, value)
+            print(sql)
+            cur.execute(sql)  # 执行sql语句
+            results = cur.fetchall()  # 获取查询的所有记录
+
+            return results
+        except Exception as e:
+            self.db.rollback()
+            return False
+            raise e
+        finally:
+            self.closeDB()
+
     def executeInsertSql(self,table,pattern,value):
         self.getDB()
         cur = self.db.cursor()
         try:
             sql="insert into %s (%s)values(%s)"%(table,pattern,value)
+            print(sql)
             cur.execute(sql)  # 执行sql语句
             self.db.commit()
             return True
@@ -80,4 +131,4 @@ class SQLOper:
 
 if __name__=='__main__':
     sqloper=SQLOper()
-    sql=sqloper.executeSql("select *from tbl_usr")
+    sql=sqloper.executeSql("select count(*) from tbl_usr")
