@@ -1,6 +1,23 @@
 
 import json
 
+class TransDao:
+
+    def __init__(self):
+
+        pass
+
+
+
+    #插入新交易，同步修改余额表
+    def insertTrans(self):
+        # TODO
+
+
+        pass
+
+
+
 class Trans:
 
     def __init__(self):

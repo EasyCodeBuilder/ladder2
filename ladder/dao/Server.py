@@ -1,5 +1,32 @@
 
 import json
+
+class ServerDao:
+
+    def __init__(self):
+
+        pass
+
+
+    # 同步数据库与服务器上记录密码
+    def checkPassword(self):
+        # TODO
+        pass
+
+
+    #修改过期的密码
+    def updatePassword(self):
+        # TODO
+        pass
+
+    #插入新主机
+    def insertNewServer(self):
+        # TODO
+
+
+        pass
+
+
 class Server:
 
     def __init__(self):

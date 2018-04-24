@@ -1,7 +1,5 @@
 
 import json
-# import SQLOper
-# from . import SQLOper
 from SQLOper import *
 
 class UserDao:
@@ -10,15 +8,14 @@ class UserDao:
         self.pattern = ""
         self.userIdcheck=False
 
-    # def insertUser(self,dataStr):
-    #     data=json.loads(dataStr)
-    #     print(type(data))
-    #
-    #     print(data['userId'])
-    #     print(data['qqNo'])
-    #     print(data.keys())
-    # def setUser(self,user):
-    #     self.user=user
+    def countUserDB(self,settleDt):
+
+        sql="select count(*) from %s where settle_dt= '%s' "%(self.tableName,settleDt)
+        sqlOper=SQLOper()
+
+        res=sqlOper.executeSql(sql)
+
+        print(res)
 
     def insertUser2DB(self,user):
         print("insert oper")
@@ -33,6 +30,7 @@ class UserDao:
             print("insert SUCCESS")
         else:
             print("insert FAIL")
+
     #一个条件搜索
     def selectUserFromDBCon1(self,key,value):
         print("select oper")

@@ -66,11 +66,11 @@ class SQLOper:
         finally:
             self.closeDB()
 
-    def executeSelectCondition2(self,param1,value1,param2,value2):
+    def executeSelectCondition2(self,table,param1,value1,param2,value2):
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql = "select * from %s where %s=%s" % (table, param, value)
+            sql = "select * from %s where %s='%s' and %s='%s' "  % (table, param1, value1,param2,value2)
             print(sql)
             cur.execute(sql)  # 执行sql语句
             results = cur.fetchall()  # 获取查询的所有记录
