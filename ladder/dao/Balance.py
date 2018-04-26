@@ -17,7 +17,9 @@ class BalanceDao:
         pass
 
     # zidong xiugai status 余额加上超期时间为0的用户
+    #return 修改用户号
     def autoUpdateStatus(self):
+
         # TODO
 
         pass
@@ -25,6 +27,11 @@ class BalanceDao:
     def insertTable(self):
         strValue=self.toString()
         sql="INSERT INTO tbl_balance (%s) VALUES() "%(self.pattern,strValue)
+        #TODO
+
+
+    def selectStop(self):
+        sql= "select user_id from tbl_balance WHERE user_status=0 and server_id!=null;"
 
 
 
