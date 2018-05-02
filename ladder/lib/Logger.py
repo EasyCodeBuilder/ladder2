@@ -22,7 +22,7 @@ class Logger():
         dict=json.loads(logsetting.read())
         logname=dict["log_file"]
         loglevel=dict["log_level"]
-        print(dict)
+        # print(dict)
 
         # 创建一个logger
         self.logger = logging.getLogger(logger)

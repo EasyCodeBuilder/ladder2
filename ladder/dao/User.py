@@ -30,13 +30,13 @@ class UserDao:
         checkRes = self.check.uniqueUserCheck(user.data, "user_id").uniqueUserCheck(user.data, "qq_no").uniqueUserCheck(
             user.data, "wechat_no").unique_check
         if (checkRes == False):
-            logger.error("{}含有重复数据，请确认后输入".format(self.check.un_unique_key))
+            logger.error("{0}={1}含有重复数据，请确认后输入".format(self.check.un_unique_key,user.data[self.check.un_unique_key]))
             return
         sqlOper = SQLOper()
         sqlRes = sqlOper.executeInsertSql(self.table_name, user.pattern, user.value_str)
 
         if (sqlRes):
-            logger.info("insert SUCCESS")
+            logger.info("insert{:^25}SUCCESS".format(user.data["user_id"]))
         else:
             logger.info("insert FAIL")
 
@@ -82,7 +82,22 @@ class UserDao:
             self.unique_check = True
         return self
 
+    def updateUserAttr(self,key,value,user_id):
+        #根据user_id 修改数据
+        sqlOper=SQLOper()
+        res=sqlOper.executeUpdateSql(self.table_name,key,value,"user_id",user_id)
+        if res :
+            logger.info("updateUserAttr SUCCESS")
+        else:
+            logger.info("updateUserAttr FAIL")
+        return res
 
+    def getUserId(self,key,value):
+        res=""
+        which = "user_id"
+        if key in["qq_no","wechat_no"] :
+            res = self.selectUserFromDBCon1(which, key,value)
+        return res
 class User:
     def __init__(self):
         self.pattern = ""
@@ -120,7 +135,7 @@ def insertUser():
     user = User()
     user_dao = UserDao()
 
-    data = {"wechat_no": "lyk11111", "wechat_name":"weeee","qq_name": "qq_name1"}
+    data = {"wechat_no": "lyk2211", "wechat_name":"weeee","qq_name": "qq_name1"}
     # d=json.loads(data)
 
     settle_dt = datetime.datetime.now().strftime('%Y%m%d')
@@ -146,7 +161,13 @@ def selectUser():
 
     print(res)
 
+def updateUser():
+    user_dao = UserDao()
+    user_dao.updateUserAttr("wechat_name","a123456","201805020001")
 
 if __name__ == '__main__':
+
     # selectUser()
-    insertUser()
+    # insertUser()
+    # updateUser()
+    pass

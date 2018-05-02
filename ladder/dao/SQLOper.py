@@ -72,7 +72,7 @@ class SQLOper:
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql = "select %s from %s where %s=%s" % (which,table, param, value)
+            sql = "select %s from %s where %s='%s'" % (which,table, param, value)
             print(sql)
             cur.execute(sql)  # 执行sql语句
             results = cur.fetchall()  # 获取查询的所有记录
@@ -97,6 +97,44 @@ class SQLOper:
 
             return results
         except Exception as e:
+            self.db.rollback()
+            return False
+            raise e
+        finally:
+            self.closeDB()
+
+    def executeUpdateSql(self,table,key,value,condKey,condValue):
+        data={}
+        self.getDB()
+        cur = self.db.cursor()
+        try:
+            sql="UPDATE %s SET %s='%s' WHERE %s=%s"%(table,key,value,condKey,condValue)
+
+            print(sql)
+            cur.execute(sql)  # 执行sql语句
+            self.db.commit()
+            return True
+        except Exception as e:
+            print("\033[1;31m{}\033[0m".format(e))
+            self.db.rollback()
+            return False
+            raise e
+        finally:
+            self.closeDB()
+
+    def executeSomeUpdateSql(self, table, str_update_values, condKey, condValue):
+        data = {}
+        self.getDB()
+        cur = self.db.cursor()
+        try:
+            sql = "UPDATE %s SET %s WHERE %s=%s" % (table, str_update_values, condKey, condValue)
+
+            print(sql)
+            cur.execute(sql)  # 执行sql语句
+            self.db.commit()
+            return True
+        except Exception as e:
+            print("\033[1;31m{}\033[0m".format(e))
             self.db.rollback()
             return False
             raise e
@@ -137,20 +175,7 @@ class SQLOper:
             self.closeDB()
             return results
 
-    def executeUpdateSql(self,sql):
-        self.getDB()
-        cur = self.db.cursor()
-        try:
-            cur.execute(sql)  # 执行sql语句
 
-            results = cur.fetchall()  # 获取查询的所有记录
-
-        except Exception as e:
-            print("\033[1;31m{}\033[0m".format(e))
-            raise e
-        finally:
-            self.closeDB()
-            return results
 
 if __name__=='__main__':
     sqloper=SQLOper()
