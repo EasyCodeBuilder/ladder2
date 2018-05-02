@@ -7,26 +7,32 @@ def disList(l):
     for i in range(0,l.__len__()):
         print(l[i])
 
-print(len(sys.argv))
-
-# for i in range(0,sys.argv.__len__()):
-#     print(sys.argv[i])
+# print(len(sys.argv))
 #
-print(sys.argv[:1])
-parser=OptionParser()
-parser.add_option("-f","--file",dest="filename",help="write report to FILE",metavar="FILE")
-parser.add_option("-q", "--quiet",
-                  action="store_false", dest="verbose", default=True,
-                  help="don't print status messages to stdout")
+# # for i in range(0,sys.argv.__len__()):
+# #     print(sys.argv[i])
+# #
+# print(sys.argv[:1])
+# parser=OptionParser()
+# parser.add_option("-f","--file",dest="filename",help="write report to FILE",metavar="FILE")
+# parser.add_option("-q", "--quiet",
+#                   action="store_false", dest="verbose", default=True,
+#                   help="don't print status messages to stdout")
+#
+# (options,args)=parser.parse_args()
+#
+# print(options.filename)
+# disList(args)
+#
+# print(type(6))
+# print(isinstance(1,int))
+def test1():
+    str="  sd f  "
 
-(options,args)=parser.parse_args()
+    print(str.strip().__len__())
 
-print(options.filename)
-disList(args)
-
-
-
-
+if __name__=='__main__':
+    test1()
 
 
 

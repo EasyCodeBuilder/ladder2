@@ -1,144 +1,152 @@
-
+import datetime
 import json
 from SQLOper import *
+from ladder.lib.CheckData import CheckData
+from ladder.lib.Logger import Logger
+
+logger=Logger().getlog()
 
 class UserDao:
     def __init__(self):
-        self.tableName="tbl_usr"
+        self.table_name = "tbl_user"
         self.pattern = ""
-        self.userIdcheck=False
+        self.unique_check = False
+        self.check = CheckData()
 
-    def countUserDB(self,settleDt):
+    def countUserDB(self, settleDt):
 
-        sql="select count(*) from %s where settle_dt= '%s' "%(self.tableName,settleDt)
-        sqlOper=SQLOper()
-
-        res=sqlOper.executeSql(sql)
-
-        print(res)
-
-    def insertUser2DB(self,user):
-        print("insert oper")
-
-        self.userIdCheck(user.userId)
-
+        sql = "select count(*) from %s where settle_dt= '%s' " % (self.table_name, settleDt)
         sqlOper = SQLOper()
+        count = sqlOper.executeSql(sql)
+        return count[0][0]
 
-        res= sqlOper.executeInsertSql(self.tableName,self.pattern,self.toString(user))
+    def insertUser2DB(self, user):
+        print("insert oper")
+        # print("AAA"+user.data.get("wechat_no","")+user.data.get("qq_no",""))
+        if (user.data.get("wechat_no","")+user.data.get("qq_no","")).strip().__len__() == 0:
+            # print("qq号, 微信号 不同时为空")
+            logger.error("qq号, 微信号 不同时为空")
+            return
+        checkRes = self.check.uniqueUserCheck(user.data, "user_id").uniqueUserCheck(user.data, "qq_no").uniqueUserCheck(
+            user.data, "wechat_no").unique_check
+        if (checkRes == False):
+            logger.error("{}含有重复数据，请确认后输入".format(self.check.un_unique_key))
+            return
+        sqlOper = SQLOper()
+        sqlRes = sqlOper.executeInsertSql(self.table_name, user.pattern, user.value_str)
 
-        if(res==True):
-            print("insert SUCCESS")
+        if (sqlRes):
+            logger.info("insert SUCCESS")
         else:
-            print("insert FAIL")
+            logger.info("insert FAIL")
 
-    #一个条件搜索
-    def selectUserFromDBCon1(self,key,value):
+    # 一个条件搜索
+    def selectUserFromDBCon1(self, which, key, value):
         print("select oper")
 
         sqlOper = SQLOper()
 
-        res= sqlOper.executeSelectCondition1(self.tableName,key,value)
+        res = sqlOper.executeSelectCondition1(which, self.table_name, key, value)
 
-        if(res!=""):
-            print("select SUCCESS")
+        if (res != ""):
+            logger.info("select SUCCESS")
             return res
         else:
-            print("select SUCCESS")
+            logger.info("select FAIL")
 
     # 两个条件搜索
 
-    def selectUserFromDBCon1(self, key, value,key2,value2):
-        print("select oper")
+    def selectUserFromDBCon2(self, which, key, value, key2, value2):
+        logger.info("select oper")
 
         sqlOper = SQLOper()
 
-        res = sqlOper.executeSelectCondition2(self.tableName, key, value,key2,value2)
+        res = sqlOper.executeSelectCondition2(which, self.table_name, key, value, key2, value2)
 
-        if (res != ""):
+        if res != "":
             print("select SUCCESS")
             return res
         else:
-            print("select SUCCESS")
+            print("select FAIL")
 
-    def userIdCheck(self,userId):
-        sql="select count(*) from %s"%self.tableName
-        sql2="select user_id from %s"%self.tableName
+    def uniqueCheck(self, key, value):
+        sql = "select count(*) from %s where %s=%s" % (self.table_name, key, value)
         # print(sql)
         sqlOper = SQLOper()
-        # count=sqlOper.executeSql(sql)[0][0]
-        userIdList=[x[0] for x in sqlOper.executeSql(sql2)]
-
-        # print( type(self.user.userId))
-        # print(type(userIdList[0]))
-        if(int(userId )in userIdList):
-            self.userIdValid=False
-            self.pattern = "qq_no,qq_nicheng,wechat,xianyu,zhuanzhuan,real_name,phone_no"
-            print("user id  no valid")
-
+        count = sqlOper.executeSql(sql)[0][0]
+        if count > 0:
+            logger.info("%s=%s is not only" % (key, value))
+            self.unique_check = False
         else:
-            self.pattern = "user_id,qq_no,qq_nicheng,wechat,xianyu,zhuanzhuan,real_name,phone_no"
-            self.userIdValid = True
-            print("user id   valid")
+            logger.info("%s=%s is only" % (key, value))
+            self.unique_check = True
+        return self
 
-
-        # print(count)
-        # print(userIdList)
-
-
-    def toString(self,user):
-
-        if(self.userIdValid):
-            str="'"+user.userId+"','"+user.qqNo+"','"+user.qqNicheng+"','"+user.wechat+"','"+user.xianyu+"','"+user.zhuanzhuan+"','"+user.realName+"','"+user.phoneNo+"'"
-        else:
-            str="'"+user.qqNo+"','"+user.qqNicheng+"','"+user.wechat+"','"+user.xianyu+"','"+user.zhuanzhuan+"','"+user.realName+"','"+user.phoneNo+"'"
-        return str
 
 class User:
     def __init__(self):
-        self.userId = ""
-        self.qqNo = ""
-        self.qqNicheng = ""
-        self.wechat = ""
-        self.xianyu = ""
-        self.zhuanzhuan = ""
-        self.realName = ""
-        self.phoneNo = ""
-        self.crtTime = ""
-        self.uptTime = ""
+        self.pattern = ""
+        self.value_str = ""
+        self.data = dict()
 
-    def setUser(self,dataStr):
-        data={}
-        data=json.loads(dataStr)
+    def __getattr__(self, item):
+        return self.__dict__[item]
 
-        if(data.has_key('userId')):
-            self.userId=data['userId']
-        if (data.has_key('qqNo')):
-            self.qqNo = data['qqNo']
-        if (data.has_key('qqNicheng')):
-           self.qqNicheng = data['qqNicheng']
-        if(data.has_key('wechat')):
-            self.wechat=data['wechat']
-        if (data.has_key('xianyu')):
-            self.xianyu = data['xianyu']
-        if (data.has_key('zhuanzhuan')):
-           self.zhuanzhuan = data['zhuanzhuan']
-        if (data.has_key('realName')):
-            self.realName = data['realName']
-        if (data.has_key('crtTime')):
-            self.crtTime = data['crtTime']
-        if (data.has_key('uptTime')):
-            self.uptTime = data['uptTime']
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
 
-if __name__=='__main__':
+    def checkData(self, data):
+        # TODO 参数格式检查，防sql注入
+        data.get("")
+        return True
 
-    data = '{"user_id":"0001","qq_no":"123456"}'
-    d=json.loads(data)
-    user=User()
-    user.userId="44"
-    user.phoneNo="15242532"
-    userDao=UserDao()
-    # user.insertUser(data)
-    print("hello %s world %s"%(d['user_id'],d['qq_no']))
-    userDao.insertUser2DB(user)
-    print(userDao.selectUserFromDB1("user_id",44))
+    def setUser(self, data):
+        self.data = data
+        res = self.checkData(data)
+        if res is False:
+            logger.error("参数错误")
+            return
+        for k, v in data.items():
+            self.pattern = "%s,%s" % (self.pattern, k)
+            if isinstance(v, int):
+                self.value_str = "%s,%d" % (self.value_str, v)
+            else:
+                self.value_str = "%s,'%s'" % (self.value_str, v)
+        self.pattern = self.pattern[1:]
+        self.value_str = self.value_str[1:]
 
+
+def insertUser():
+    user = User()
+    user_dao = UserDao()
+
+    data = {"wechat_no": "lyk11111", "wechat_name":"weeee","qq_name": "qq_name1"}
+    # d=json.loads(data)
+
+    settle_dt = datetime.datetime.now().strftime('%Y%m%d')
+    print("settle_dt=" + settle_dt)
+    res = user_dao.countUserDB(settle_dt)
+    print(res)
+    user_id = "%s%04d" % (settle_dt, int(res) + 1)
+    print("user_id=%s" % user_id)
+
+    data["settle_dt"] = settle_dt
+    data["user_id"] = user_id
+    user.setUser(data)
+
+    # print(user.pattern)
+    # print(user.value_str)
+    user_dao.insertUser2DB(user)
+
+
+def selectUser():
+    user_dao = UserDao()
+    which = "user_id,settle_dt,wechat_no,wechat_name,qq_no,qq_name"
+    res = user_dao.selectUserFromDBCon1(which, "qq_no", "978611111")
+
+    print(res)
+
+
+if __name__ == '__main__':
+    # selectUser()
+    insertUser()

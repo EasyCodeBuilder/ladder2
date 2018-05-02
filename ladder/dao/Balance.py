@@ -34,6 +34,12 @@ class BalanceDao:
         sql= "select user_id from tbl_balance WHERE user_status=0 and server_id!=null;"
 
 
+    def fromUserIdGetCurr(self,userId):
+
+        sql="select current_day,total_balance from tbl_balance"
+        sqlOper=SQLOper()
+        res=sqlOper.executeSql(sql)
+        return res
 
     def toString(self):
 
