@@ -25,15 +25,14 @@ class TransDao:
         sqlRes = sqlOper.executeInsertSql(self.table_name, trans.pattern, trans.value_str)
         if (sqlRes):
             logger.info("insert user_id={},trans_cd={} SUCCESS".format(user_id,trans_cd))
-            ret = SUCCESS.setRet(msg="insert user_id={},trans_cd={} SUCCESS".format(user_id,trans_cd))
+            return SUCCESS.setRet(msg="insert user_id={},trans_cd={} SUCCESS".format(user_id,trans_cd))
         else:
             logger.error(" insert FAILURE {}={} ".format("user_id", user_id))
-            ret = FAILURE.setRet(msg=" insert FAIL {}={} ".format("user_id", user_id))
+            return FAILURE.setRet(msg=" insert FAIL {}={} ".format("user_id", user_id))
 
     def getTrans(self,data):
 
         cond=""
-        data={}
         for k,v in data.items():
             cond=" %s and %s='%s' "%(cond,k,v)
         sql="select %s from %s where 1=1 %s"%(self.select_all_which,self.table_name,cond)
@@ -59,6 +58,8 @@ class Trans:
             key = self.keys_list[i]
             if data.__contains__(key):
                 self.data[key] = data[key]
+
+        self.flushInsert()
 
     def flushInsert(self):
         self.pattern = ""

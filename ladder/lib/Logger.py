@@ -3,7 +3,7 @@ import logging
 import json
 #用字典保存日志级别
 format_dict = {
-   1 : logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s|%(funcName)s|%(lineno)d - %(message)s'),
+   1 : logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s\t|%(funcName)s\t|%(lineno)d - %(message)s'),
    2 : logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(filename)s|%(funcName)s|%(lineno)d - %(message)s'),
    3 : logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(filename)s|%(funcName)s|%(lineno)d - %(message)s'),
    4 : logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(filename)s|%(funcName)s|%(lineno)d - %(message)s'),

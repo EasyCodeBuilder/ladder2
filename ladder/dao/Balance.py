@@ -77,10 +77,10 @@ class BalanceDao:
             keys = self.select_all_which.replace(" ", "").split(",")
             res = sqlOper.executeSelectCondition1(self.select_all_which, self.table_name, "user_id", user_id)
             # balance = Balance(user_id)
-            print(res)
+            # print(res)
             for i in range(keys.__len__()):
                 data.setdefault(keys[i], res[0][i])
-            print(data)
+            # print(data)
             return SUCCESS.setData(data)
         else:
             logger.error("user_id 不存在")
@@ -88,25 +88,30 @@ class BalanceDao:
 
     def updateBalance(self, user_id, data):
 
-        if self.countUserDB(user_id) == 1:
-            sqlOper = SQLOper()
-            str_update = self.getUpdateStr(data)
-            res = sqlOper.executeSomeUpdateSql(self.table_name, str_update, "user_id", user_id)
-            logger.info("update user_id={} success".format(user_id))
-            return SUCCESS.setRet(msg="update user_id={} success".format(user_id), data={"res", res})
-        else:
+        if self.countUserDB(user_id) != 1:
             logger.error("user_id 不存在")
             return FAILURE.setRet(msg="user_id 不存在")
+        sqlOper = SQLOper()
+        str_update = self.getUpdateStr(data)
+        res = sqlOper.executeSomeUpdateSql(self.table_name, str_update, "user_id", user_id)
+        if res is False:
+            logger.error("update  balance  failed")
+            return FAILURE.setRet(msg="update  balance  failed")
+        logger.info("update user_id={} success".format(user_id))
+        return SUCCESS.setRet(msg="update user_id={} success".format(user_id), data={"res":res})
+
+
 
     def getUpdateStr(self, data):
         if data.__len__() == 0:
             return ""
         str = ""
         for k, v in data.items():
-            if isinstance(v, int):
-                str = "%s,%s='%d'" % (str, k, v)
-            else:
-                str = "%s,%s='%s'" % (str, k, v)
+            if k in self.select_all_which.replace(" ","").split(","):
+                if isinstance(v, int):
+                    str = "%s,%s='%d'" % (str, k, v)
+                else:
+                    str = "%s,%s='%s'" % (str, k, v)
 
         return str[1:]
 

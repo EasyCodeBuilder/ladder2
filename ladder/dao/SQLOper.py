@@ -104,6 +104,7 @@ class SQLOper:
             self.closeDB()
 
     def executeUpdateSql(self,table,key,value,condKey,condValue):
+        ret=False
         data={}
         self.getDB()
         cur = self.db.cursor()
@@ -113,21 +114,22 @@ class SQLOper:
             print(sql)
             cur.execute(sql)  # 执行sql语句
             self.db.commit()
-            return True
+            ret= True
         except Exception as e:
             print("\033[1;31m{}\033[0m".format(e))
             self.db.rollback()
-            return False
+            ret= False
             raise e
         finally:
             self.closeDB()
+            return ret
 
     def executeSomeUpdateSql(self, table, str_update_values, condKey, condValue):
         data = {}
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql = "UPDATE %s SET %s WHERE %s=%s" % (table, str_update_values, condKey, condValue)
+            sql = "UPDATE %s SET %s WHERE %s='%s' " % (table, str_update_values, condKey, condValue)
 
             print(sql)
             cur.execute(sql)  # 执行sql语句
