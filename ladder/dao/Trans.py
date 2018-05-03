@@ -1,5 +1,6 @@
 import json
 import datetime
+from SQLOper import *
 from ladder.lib.Logger import Logger
 from ladder.lib.RetMsg import *
 
@@ -54,9 +55,8 @@ class Trans:
         self.flushInsert()
 
     def setTrans(self, data):
-        data = {}
         for i in range(self.keys_list.__len__()):
-            key = self.key_list[i]
+            key = self.keys_list[i]
             if data.__contains__(key):
                 self.data[key] = data[key]
 
@@ -74,9 +74,13 @@ class Trans:
 
 
 def insertTrans():
-    data = {"user_id": "201805020002", "buss_no": "20180502181423111256", "trans_cd": "1002", "trans_at": 10,
+    data = {"user_id": "201805020002", "trans_cd": "1002", "trans_at": 10,
             "trans_day": 30, "settle_dt": "20180502", "curr_day": 30, "curr_balance": 10}
-
+    buss_no=datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
+    # print(buss_no.__str__())
+    data.update(buss_no=buss_no)
+    print(data)
+    # print(buss_n)
     trans = Trans(data)
 
     trans_dao = TransDao()
@@ -84,12 +88,16 @@ def insertTrans():
 
 
 def selectTrans():
-    data = {"buss_no": "12345679", "trans_cd": "1002", "user_id": "20180502111"}
+    data = {"user_id": "201805020002"}
 
     trans_dao = TransDao()
     res= trans_dao.getTrans(data)
-    print(res)
+
+    for i in range(res.__len__()):
+        value=res[i]
+        print(value)
 
 
 if __name__ == '__main__':
-    insertTrans()
+    # insertTrans()
+    selectTrans()
