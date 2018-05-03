@@ -217,6 +217,16 @@ def stopUserServer(user_id):
     else:
         return "user_id={}  is stop".format(user_id)
 
+def selectUnuseServer():
+    pass
+    #TODO
+
+def insertSomeServer(data):
+
+    data={}#############delete
+
+
+
 if __name__ == "__main__":
     # data={}
     # for i in range(50):

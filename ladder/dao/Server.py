@@ -1,4 +1,6 @@
 import json
+from random import Random
+
 from ladder.dao.SQLOper import SQLOper
 from ladder.lib.RetMsg import *
 from ladder.lib.Logger import Logger
@@ -119,6 +121,12 @@ class Server:
         self.pattern = self.pattern[1:]
         self.value_str = self.value_str[1:]
 
+    def changeServerPassword(self,server_id):
+        data={}
+        rand=Random()
+        password=
+        self.updateServer(server_id, data)
+
 
 def insertServer():
     server_dao = ServerDao()
@@ -134,7 +142,7 @@ def updateServer():
     server_dao = ServerDao()
     server = Server()
     server_id = "201805020002"
-    data = {"current_day": 180, "total_day": 180, "total_balance": 55}
+    data = {"port": 65225, "total_day": 180, "total_balance": 55}
     server_dao.updateServer(server_id, data)
 
 
@@ -160,9 +168,11 @@ def getServer():
 
 
 if __name__ == '__main__':
-    insertServer()
+    # insertServer()
     # getBalance()
     # balance=Balance()
     # balance.setBalanceDict(getBalance())
     # print(balance.data)
     # updateServer()
+    rand=Random()
+    print(rand.randint(10,15))

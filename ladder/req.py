@@ -38,29 +38,37 @@ url2="http://127.0.0.1:3000//consumeRecord"
 
 
 
+def run():
 
-data={"adminAccount":"root","adminPassword":"OStem@00"}
-# url="http://member.3efang.com/Login.php"
-# data={"uid":"121212","upass":"111111","Submit":"提 交"}
-# reqPOST(url,data)
-# reqGET(url,data)
+    data={"adminAccount":"root","adminPassword":"OStem@00"}
+    # url="http://member.3efang.com/Login.php"
+    # data={"uid":"121212","upass":"111111","Submit":"提 交"}
+    # reqPOST(url,data)
+    # reqGET(url,data)
 
-# createAdmin={"adminAccount":"root","adminPassword":"OStem@00","adminName":"aras","adminPhone":"13500001111"}
-# createAdminUrl="http://127.0.0.1:3000/admin"
-#
-# reqPOST(createAdminUrl,createAdmin)
+    # createAdmin={"adminAccount":"root","adminPassword":"OStem@00","adminName":"aras","adminPhone":"13500001111"}
+    # createAdminUrl="http://127.0.0.1:3000/admin"
+    #
+    # reqPOST(createAdminUrl,createAdmin)
 
 
 
-# resJson=json.loads(res)
-#
-#
-#
-# print(type(resJson['result']))
-# # print(resJson['result'])
-# displayRes(resJson['result'])
+    # resJson=json.loads(res)
+    #
+    #
+    #
+    # print(type(resJson['result']))
+    # # print(resJson['result'])
+    # displayRes(resJson['result'])
 
-checkurl="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6a454852c62b7e0&redirect_uri=http%3A%2F%2Foauth.youtoupiao.com%2Fauthorize%2Fauthorize.html%3Fjump%3Dhttp%3A%2F%2Fme0cb28c7f4cd194c.wxvote.youtoupiao.com%2Fpage%2Fshow%2Fid%2F7dc9ba75e1b7bbec.html%3Fiiid%3D1524185209036177000&response_type=code&scope=snsapi_userinfo&state=9080be1269ea12d23f53a2016bb4ec3c#wechat_redirect"
-data={}
-reqGET(checkurl,data)
+    checkurl="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6a454852c62b7e0&redirect_uri=http%3A%2F%2Foauth.youtoupiao.com%2Fauthorize%2Fauthorize.html%3Fjump%3Dhttp%3A%2F%2Fme0cb28c7f4cd194c.wxvote.youtoupiao.com%2Fpage%2Fshow%2Fid%2F7dc9ba75e1b7bbec.html%3Fiiid%3D1524185209036177000&response_type=code&scope=snsapi_userinfo&state=9080be1269ea12d23f53a2016bb4ec3c#wechat_redirect"
+    data={}
+    reqGET(checkurl,data)
 
+def run2():
+    print("good")
+    pass
+
+if __name__=="__main__":
+
+    run2()
