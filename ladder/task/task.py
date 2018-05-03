@@ -197,6 +197,8 @@ def flushAllServer():
     res= user_dao.selectUserFromDBCon1("user_id","user_status","0")
     stop_user_list=[r[0] for r in res]
     print(stop_user_list)
+    res=[stopUserServer(user_id) for user_id in stop_user_list]
+    print(res)
 
 def stopUserServer(user_id):
     balance_dao = BalanceDao()
@@ -211,7 +213,9 @@ def stopUserServer(user_id):
         data_server={"server_status":"0"}
         data_server.update()
         server_dao.updateServer(server_id,data_server)
-
+        return "user_id={} stop ed".format(user_id)
+    else:
+        return "user_id={}  is stop".format(user_id)
 
 if __name__ == "__main__":
     # data={}
