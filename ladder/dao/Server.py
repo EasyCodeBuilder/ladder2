@@ -79,6 +79,15 @@ class ServerDao:
                 str = "%s,%s='%s'" % (str, k, v)
 
         return str[1:]
+    def selectServer(self,which,data):
+        cond = ""
+        for k, v in data.items():
+            cond = " %s and %s='%s' " % (cond, k, v)
+        sql = "select %s from %s where 1=1 %s" % (which, self.table_name, cond)
+        sqlOper = SQLOper()
+        res=sqlOper.executeSql(sql)
+
+        return res
 
 
 class Server:

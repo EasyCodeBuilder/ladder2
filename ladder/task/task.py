@@ -167,7 +167,14 @@ def allCharge():
     res = [chargeAccount(user_id, trans_at, trans_day, trans_cd) for user_id in user_id_list]
     print(res)
 
-def flushTblUser(user_id):
+def flushAllUser():
+    balance_dao = BalanceDao()
+    res = balance_dao.selectBalance("user_id", {})
+    user_id_list = [r[0] for r in res]
+    res = [flushOneUser(user_id) for user_id in user_id_list]
+    print(res)
+
+def flushOneUser(user_id):
     balance_dao = BalanceDao()
     data = {}
     data.update(user_id=user_id)
@@ -183,6 +190,27 @@ def flushTblUser(user_id):
     user_dao.updateUserAttr("user_status","0",user_id)
 
     return "user_id={} stop ".format(user_id)
+
+
+def flushAllServer():
+    user_dao=UserDao()
+    res= user_dao.selectUserFromDBCon1("user_id","user_status","0")
+    stop_user_list=[r[0] for r in res]
+    print(stop_user_list)
+
+def stopUserServer(user_id):
+    balance_dao = BalanceDao()
+    data = {}
+    data.update(user_id=user_id)
+    res = balance_dao.selectBalance("server_id", data)
+    server_id = res[0][0]
+
+    server_dao=ServerDao()
+    res=server_dao.selectServer("server_status",{"server_id":server_id})
+    if int(res[0][0]) !=0:
+        data_server={"server_status":"0"}
+        data_server.update()
+        server_dao.updateServer(server_id,data_server)
 
 
 if __name__ == "__main__":
@@ -207,4 +235,10 @@ if __name__ == "__main__":
     #     decreaseDay("201805030001")
 
     ##auto decrease everyday
-    autoDecreaseDay()
+    # autoDecreaseDay()
+
+
+    ###
+    # flushAllUser()
+
+    flushAllServer()
