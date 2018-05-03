@@ -1,5 +1,5 @@
 import json
-from SQLOper import *
+from ladder.dao.SQLOper import SQLOper
 from ladder.lib.RetMsg import *
 from ladder.lib.Logger import Logger
 
@@ -9,9 +9,7 @@ logger = Logger("server").getlog()
 class ServerDao:
     def __init__(self):
         self.table_name = "tbl_server"
-        self.select_all_which = "server_id,port,key,server_status"
-
-
+        self.select_all_which = "server_id,port,password,server_status"
 
     def countUserDB(self, server_id):
 
@@ -22,32 +20,32 @@ class ServerDao:
 
     def insertServer2DB(self, server):
         logger.info("enter insertBalance2DB")
-        user_id = server.data["user_id"]
+        server_id = server.data["server_id"]
 
-        if self.countUserDB(user_id) == 0:
+        if self.countUserDB(server_id) == 0:
 
             sqlOper = SQLOper()
-            sqlRes = sqlOper.executeInsertSql(self.table_name, balance.pattern, balance.value_str)
+            sqlRes = sqlOper.executeInsertSql(self.table_name, server.pattern, server.value_str)
 
             if (sqlRes):
-                logger.info("insert{:^25}SUCCESS".format(user_id))
+                logger.info("insert{:^25}SUCCESS".format(server_id))
                 ret = SUCCESS
             else:
-                logger.error(" insert FAIL {}={} ".format("user_id", user_id))
-                ret = FAILURE.setRet(msg=" insert FAIL {}={} ".format("user_id", user_id))
+                logger.error(" insert FAIL {}={} ".format("server_id", server_id))
+                ret = FAILURE.setRet(msg=" insert FAIL {}={} ".format("server_id", server_id))
         else:
-            logger.error("{}={} 已存在".format("user_id", user_id))
-            ret = FAILURE.setRet(msg="{}={} 已存在".format("user_id", user_id))
+            logger.error("{}={} 已存在".format("server_id", server_id))
+            ret = FAILURE.setRet(msg="{}={} 已存在".format("server_id", server_id))
 
         return ret
 
-    def getBalance(self, user_id):
+    def getServer(self, server_id):
         data = {}
 
-        if self.countUserDB(user_id) == 1:
+        if self.countUserDB(server_id) == 1:
             sqlOper = SQLOper()
             keys = self.select_all_which.replace(" ", "").split(",")
-            res = sqlOper.executeSelectCondition1(self.select_all_which, self.table_name, "user_id", user_id)
+            res = sqlOper.executeSelectCondition1(self.select_all_which, self.table_name, "server_id", server_id)
             # balance = Balance(user_id)
             print(res)
             for i in range(keys.__len__()):
@@ -58,14 +56,14 @@ class ServerDao:
             logger.error("user_id 不存在")
             return FAILURE.setRet(msg="user_id 不存在")
 
-    def updateBalance(self, user_id, data):
+    def updateServer(self, server_id, data):
 
-        if self.countUserDB(user_id) == 1:
+        if self.countUserDB(server_id) == 1:
             sqlOper = SQLOper()
-            str_update=self.getUpdateStr(data)
-            res=sqlOper.executeSomeUpdateSql(self.table_name,str_update,"user_id",user_id)
-            logger.info("update user_id={} success".format(user_id))
-            return SUCCESS.setRet(msg="update user_id={} success".format(user_id),data={"res",res})
+            str_update = self.getUpdateStr(data)
+            res = sqlOper.executeSomeUpdateSql(self.table_name, str_update, "server_id", server_id)
+            logger.info("update server_id={} success".format(server_id))
+            return SUCCESS.setRet(msg="update server_id={} success".format(server_id), data={"res", res})
         else:
             logger.error("user_id 不存在")
             return FAILURE.setRet(msg="user_id 不存在")
@@ -86,7 +84,7 @@ class ServerDao:
 class Server:
     def __init__(self):
         self.data = {}
-        self.keys_list = ["server_id","port","key","server_status"]
+        self.keys_list = ["server_id", "port", "password", "server_status"]
         self.pattern = ""
         self.value_str = ""
         self.flushInsert()
@@ -115,33 +113,34 @@ class Server:
 
 def insertServer():
     server_dao = ServerDao()
-    server = Server("201805020001")
-    data = {"server_id": "10120120325265545", "port": "66545", "key": "PLOKIJKLKK","server_status":"1"}
+    server = Server()
+    data = {"server_id": "10120120325265545", "port": "66545", "password": "PLOKIJKLKK", "server_status": "1"}
     server.setServerDict(data)
     # data={"user_id":"201805020001"}
     # print(balance.__dict__)
     server_dao.insertServer2DB(server)
 
 
-def updateBalance():
-    balance_dao = BalanceDao()
-    balance = Balance()
-    user_id = "201805020002"
+def updateServer():
+    server_dao = ServerDao()
+    server = Server()
+    server_id = "201805020002"
     data = {"current_day": 180, "total_day": 180, "total_balance": 55}
-    balance_dao.updateBalance(user_id, data)
+    server_dao.updateServer(server_id, data)
 
 
-def selectBalance():
-    balance_dao = BalanceDao()
+def selectServer():
+    server_dao = ServerDao()
+    server = Server()
 
     # ret=balance_dao.
 
 
-def getBalance():
+def getServer():
     ret = RetMsg()
-    balance_dao = BalanceDao()
-    # balance = Balance("12355")
-    ret = balance_dao.getBalance("201805020002")
+    server_dao = ServerDao()
+    server_id = ""
+    ret = server_dao.getServer(server_id)
 
     print(SUCCESS.getCode())
     print(ret.getCode())
@@ -152,9 +151,9 @@ def getBalance():
 
 
 if __name__ == '__main__':
-# insertBalance()
-# getBalance()
-# balance=Balance()
-# balance.setBalanceDict(getBalance())
-# print(balance.data)
-    updateBalance()
+    insertServer()
+    # getBalance()
+    # balance=Balance()
+    # balance.setBalanceDict(getBalance())
+    # print(balance.data)
+    # updateServer()

@@ -1,5 +1,5 @@
 import json
-from SQLOper import *
+from ladder.dao.SQLOper import SQLOper
 from ladder.lib.RetMsg import *
 from ladder.lib.Logger import Logger
 
@@ -90,10 +90,10 @@ class BalanceDao:
 
         if self.countUserDB(user_id) == 1:
             sqlOper = SQLOper()
-            str_update=self.getUpdateStr(data)
-            res=sqlOper.executeSomeUpdateSql(self.table_name,str_update,"user_id",user_id)
+            str_update = self.getUpdateStr(data)
+            res = sqlOper.executeSomeUpdateSql(self.table_name, str_update, "user_id", user_id)
             logger.info("update user_id={} success".format(user_id))
-            return SUCCESS.setRet(msg="update user_id={} success".format(user_id),data={"res",res})
+            return SUCCESS.setRet(msg="update user_id={} success".format(user_id), data={"res", res})
         else:
             logger.error("user_id 不存在")
             return FAILURE.setRet(msg="user_id 不存在")
@@ -115,7 +115,9 @@ class Balance:
     def __init__(self, user_id=""):
         self.data = {}
         self.keys_list = ["user_id", "current_day", "total_day", "total_balance", "over_day", "server_id"]
-        self.data.setdefault("user_id", user_id)
+
+        if user_id.__len__() != 0:
+            self.data.setdefault("user_id", user_id)
         self.pattern = ""
         self.value_str = ""
         self.flushInsert()
@@ -185,9 +187,9 @@ def getBalance():
 
 
 if __name__ == '__main__':
-# insertBalance()
-# getBalance()
-# balance=Balance()
-# balance.setBalanceDict(getBalance())
-# print(balance.data)
+    # insertBalance()
+    # getBalance()
+    # balance=Balance()
+    # balance.setBalanceDict(getBalance())
+    # print(balance.data)
     updateBalance()
