@@ -9,7 +9,8 @@ def dailyWork():
     balance     =Balance()
     balanceDao  =BalanceDao()
 
-    res=balanceDao.autoUpdateBalance()
+    res=balanceDao.selectBalance("user_id",{})
+
 
     if(res==False):
         print("daily work 1 faild")

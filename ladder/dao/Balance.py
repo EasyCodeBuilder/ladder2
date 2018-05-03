@@ -115,6 +115,15 @@ class BalanceDao:
 
         return str[1:]
 
+    def selectBalance(self,which,data):
+        cond = ""
+        for k, v in data.items():
+            cond = " %s and %s='%s' " % (cond, k, v)
+        sql = "select %s from %s where 1=1 %s" % (which, self.table_name, cond)
+        sqlOper = SQLOper()
+        res=sqlOper.executeSql(sql)
+
+        return res
 
 class Balance:
     def __init__(self, user_id=""):
@@ -173,8 +182,8 @@ def updateBalance():
 
 def selectBalance():
     balance_dao = BalanceDao()
-
-    # ret=balance_dao.
+    data={}
+    ret=balance_dao.selectBalance("user_id",data)
 
 
 def getBalance():
