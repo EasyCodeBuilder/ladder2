@@ -11,7 +11,7 @@ logger = Logger("server").getlog()
 class ServerDao:
     def __init__(self):
         self.table_name = "tbl_server"
-        self.select_all_which = "server_id,port,password,server_status"
+        self.select_all_which = "server_id,ip,port,password,server_status"
 
     def countUserDB(self, server_id):
 
@@ -65,7 +65,7 @@ class ServerDao:
             str_update = self.getUpdateStr(data)
             res = sqlOper.executeSomeUpdateSql(self.table_name, str_update, "server_id", server_id)
             logger.info("update server_id={} success".format(server_id))
-            return SUCCESS.setRet(msg="update server_id={} success".format(server_id), data={"res", res})
+            return SUCCESS.setRet(msg="update server_id={} success".format(server_id), data={"res":res})
         else:
             logger.error("user_id 不存在")
             return FAILURE.setRet(msg="user_id 不存在")
@@ -91,11 +91,22 @@ class ServerDao:
 
         return res
 
+    def changeServerPassword(self,server_id):
+        password_list=["qwertg1597","qasxzc1112","okmjio4565","uhbnji7897","tfcxdr8526","wsdfgh4545","uhbvcx8889",
+                       "rfvcxd5552","hjkmnb4745","bhgvcf6566","rfgtyh7187","dcvfre8789","dcvbnm5856","cfghyt7978"]
+        data={}
+        password=password_list[Random().randint(0,password_list.__len__()-1)]
+        data.update(password=password)
+        pre_password=self.selectServer("password",{"server_id":server_id})
+        self.updateServer(server_id, data)
+        # print(data)
+        return server_id+":"+pre_password[0][0]+"->"+password
+
 
 class Server:
     def __init__(self):
         self.data = {}
-        self.keys_list = ["server_id", "port", "password", "server_status"]
+        self.keys_list = ["server_id","ip","port", "password", "server_status","resv1"]
         self.pattern = ""
         self.value_str = ""
         self.flushInsert()
@@ -103,10 +114,10 @@ class Server:
     def setServerDict(self, data):
         # data={}
         for key in self.keys_list:
-            if data.__contains__(key) is False:
-                logger.error(" don't have key='{}'".format(key))
-                return FAILURE.setRet(msg=" don't have key='{}'".format(key))
-            self.data[key] = data[key]
+            if data.__contains__(key) is True :
+                # logger.error(" don't have key='{}'".format(key))
+                # return FAILURE.setRet(msg=" don't have key='{}'".format(key))
+                self.data[key] = data[key]
         self.flushInsert()
 
     def flushInsert(self):
@@ -121,11 +132,6 @@ class Server:
         self.pattern = self.pattern[1:]
         self.value_str = self.value_str[1:]
 
-    def changeServerPassword(self,server_id):
-        data={}
-        rand=Random()
-        password=
-        self.updateServer(server_id, data)
 
 
 def insertServer():
@@ -142,7 +148,7 @@ def updateServer():
     server_dao = ServerDao()
     server = Server()
     server_id = "201805020002"
-    data = {"port": 65225, "total_day": 180, "total_balance": 55}
+    data = {"port": 65225}
     server_dao.updateServer(server_id, data)
 
 
@@ -152,7 +158,12 @@ def selectServer():
 
     # ret=balance_dao.
 
+def changeAllPswd():
+    server_dao = ServerDao()
 
+    server_list=[ser[0] for ser in server_dao.selectServer("server_id",{"server_status":"0"})]
+    res=[server_dao.changeServerPassword(server_id) for server_id in server_list]
+    print(res)
 def getServer():
     ret = RetMsg()
     server_dao = ServerDao()
@@ -166,6 +177,11 @@ def getServer():
     else:
         print(ret)
 
+def changePassword():
+
+    server_dao=ServerDao()
+    server_dao.changeServerPassword("1")
+
 
 if __name__ == '__main__':
     # insertServer()
@@ -174,5 +190,5 @@ if __name__ == '__main__':
     # balance.setBalanceDict(getBalance())
     # print(balance.data)
     # updateServer()
-    rand=Random()
-    print(rand.randint(10,15))
+    # changePassword()
+    changeAllPswd()
