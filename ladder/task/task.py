@@ -67,7 +67,7 @@ def addTrans(user_id, trans_at, trans_day, trans_cd):
     trans_dao = TransDao()
     balance = Balance()
     balance_dao = BalanceDao()
-    user_dao=UserDao()
+    user_dao = UserDao()
 
     ret = balance_dao.getBalance(user_id)
     if ret.getCode() != SUCCESS.getCode():
@@ -90,13 +90,12 @@ def addTrans(user_id, trans_at, trans_day, trans_cd):
         logger.error("non exist user_id={}".format(user_id))
         return FAILURE.setRet(data="non exist user_id={}".format(user_id))
 
-    ret=user_dao.updateUserAttr("user_status","1",user_id)
+    ret = user_dao.updateUserAttr("user_status", "1", user_id)
     logger.info("change_balance={}".format(change_balance))
     return SUCCESS.setData(change_balance)
 
 
 def chargeAccount(user_id, trans_at, trans_day, trans_cd):
-
     trans = Trans()
     trans_dao = TransDao()
     balance = Balance()
@@ -144,7 +143,7 @@ def decreaseDay(user_id):
     user_id = res[0][0]
     current_day = int(res[0][1])
     over_day = int(res[0][2])
-    print("current_day={},over_day={}".format(current_day,over_day))
+    print("current_day={},over_day={}".format(current_day, over_day))
     if current_day + over_day <= 0:
         return "user_id={} stay".format(user_id)
     data_decrease = {"current_day": current_day - 1}
@@ -167,12 +166,14 @@ def allCharge():
     res = [chargeAccount(user_id, trans_at, trans_day, trans_cd) for user_id in user_id_list]
     print(res)
 
+
 def flushAllUser():
     balance_dao = BalanceDao()
     res = balance_dao.selectBalance("user_id", {})
     user_id_list = [r[0] for r in res]
     res = [flushOneUser(user_id) for user_id in user_id_list]
     print(res)
+
 
 def flushOneUser(user_id):
     balance_dao = BalanceDao()
@@ -186,19 +187,20 @@ def flushOneUser(user_id):
     if current_day + over_day > 0:
         return "user_id={} stay not change table user".format(user_id)
     ######## ke you hua TODO
-    user_dao=UserDao()
-    user_dao.updateUserAttr("user_status","0",user_id)
+    user_dao = UserDao()
+    user_dao.updateUserAttr("user_status", "0", user_id)
 
     return "user_id={} stop ".format(user_id)
 
 
 def flushAllServer():
-    user_dao=UserDao()
-    res= user_dao.selectUserFromDBCon1("user_id","user_status","0")
-    stop_user_list=[r[0] for r in res]
+    user_dao = UserDao()
+    res = user_dao.selectUserFromDBCon1("user_id", "user_status", "0")
+    stop_user_list = [r[0] for r in res]
     print(stop_user_list)
-    res=[stopUserServer(user_id) for user_id in stop_user_list]
+    res = [stopUserServer(user_id) for user_id in stop_user_list]
     print(res)
+
 
 def stopUserServer(user_id):
     balance_dao = BalanceDao()
@@ -207,26 +209,43 @@ def stopUserServer(user_id):
     res = balance_dao.selectBalance("server_id", data)
     server_id = res[0][0]
 
-    server_dao=ServerDao()
-    res=server_dao.selectServer("server_status",{"server_id":server_id})
-    if int(res[0][0]) !=0:
-        data_server={"server_status":"0"}
+    server_dao = ServerDao()
+    res = server_dao.selectServer("server_status", {"server_id": server_id})
+    if int(res[0][0]) != 0:
+        data_server = {"server_status": "0"}
         data_server.update()
-        server_dao.updateServer(server_id,data_server)
+        server_dao.updateServer(server_id, data_server)
         return "user_id={} stop ed".format(user_id)
     else:
         return "user_id={}  is stop".format(user_id)
 
+
 def selectUnuseServer():
     pass
-    #TODO
+    # TODO
+
 
 def insertSomeServer(data):
-
-    data={}#############delete
-
+    data = {}  #############delete
 
 
+def insertRequsert(req={}, res={}):
+    req_no = req.get("buss_no")
+    req_cd = req.get("function_id")
+    req_param = str(req)
+    settle_dt = req.get("settle_dt")
+    res_msg = str(res)
+
+    data = {}
+    data.update(req_no=req_no)
+    data.update(req_cd=req_cd)
+    data.update(req_param=req_param)
+    data.update(settle_dt=settle_dt)
+    data.update(res_msg=res_msg)
+
+    request_dao= RequestDao()
+
+    request_dao.insertRequset(Request(data))
 if __name__ == "__main__":
     # data={}
     # for i in range(50):

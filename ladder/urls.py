@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url
-from . import view
+from ladder import view
 urlpatterns = [
 #    path('admin/', admin.site.urls),
     url(r'^$',view.hello),
-    url(r'^add/$',view.add)
+    url(r'^add/$',view.add),
+    url(r'^register/$',view.trans)
 ]

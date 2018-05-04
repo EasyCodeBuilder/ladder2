@@ -18,7 +18,7 @@ class Logger():
            指定保存日志的文件路径，日志级别，以及调用文件
            将日志存入到指定的文件中
         '''
-        logsetting=open("../conf/logger.json","r")
+        logsetting=open("ladder/conf/logger.json","r")
         dict=json.loads(logsetting.read())
         logname=dict["log_file"]
         loglevel=dict["log_level"]

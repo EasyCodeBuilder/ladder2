@@ -1,13 +1,11 @@
 from django.http import HttpResponse
-from .dao.User import *
-from .dao.Server import *
-from .dao.Trans import *
+from ladder.dao.include import *
 import json
-
+from ladder.task.task import *
 
 def hello(request):
-    json={"name":"lyk","no":"12548"}
-    return HttpResponse(json)
+    json={"name":"lyk","no":"12548","qq_no":"97848484"}
+    return HttpResponse(str(json))
 
 def add(request):
     data=request.GET['data']
@@ -28,3 +26,21 @@ def add(request):
         return HttpResponse("Wrong")
 
     return HttpResponse("Done")
+
+def trans(request):
+    #接受结果
+    dataHeadStr=request.GET['dataHead']
+    dataBodyStr=request.GET['dataBody']
+
+    head=eval(dataHeadStr)
+    body=eval(dataBodyStr)
+
+    print(type(head))
+    print(body)
+    #返回结果
+    resData={}
+    resData.update(res="success")
+
+    print("head and body = {}".format(dict(head,**body)))
+    insertRequsert(dict(head,**body),resData)
+    return HttpResponse(str(resData))
