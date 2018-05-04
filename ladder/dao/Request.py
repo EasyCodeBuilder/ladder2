@@ -1,6 +1,7 @@
 
 from ladder.lib.Logger import Logger
 from ladder.lib.RetMsg import *
+from ladder.dao.SQLOper import SQLOper
 
 logger=Logger('request').getlog()
 
@@ -52,7 +53,7 @@ class Request:
             if isinstance(v, int):
                 self.value_str = "%s,%d" % (self.value_str, v)
             else:
-                self.value_str = "%s,'%s'" % (self.value_str, v)
+                self.value_str = "%s,\"%s\"" % (self.value_str, v)
         self.pattern = self.pattern[1:]
         self.value_str = self.value_str[1:]
 

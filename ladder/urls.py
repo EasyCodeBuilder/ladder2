@@ -20,5 +20,5 @@ urlpatterns = [
 #    path('admin/', admin.site.urls),
     url(r'^$',view.hello),
     url(r'^add/$',view.add),
-    url(r'^register/$',view.trans)
+    url(r'^trans/$',view.trans)
 ]

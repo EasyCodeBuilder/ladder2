@@ -90,7 +90,29 @@ def register():
 
     data.update(dataBody=str(dataBody))
     data.update(dataHead=str(dataHead))
-    url = "http://127.0.0.1:8000/register"
+    url = "http://127.0.0.1:8000/trans"
+    print(data)
+    res = reqGET(url, data)
+    print(res)
+
+def charge():
+    data     = {}
+    dataHead = {}
+    dataBody = {}
+
+    function_id = "2001"
+    settle_dt   = datetime.now().strftime('%Y%m%d')
+    buss_no     = datetime.now().strftime('%Y%m%d%H%M%S%f')
+
+    dataHead.update(function_id=function_id)
+    dataHead.update(buss_no=buss_no)
+    dataHead.update(settle_dt=settle_dt)
+
+    dataBody={"user_id":"201805040001","trans_at":10,"trans_day":30,"trans_cd":"2001"}
+
+    data.update(dataBody=str(dataBody))
+    data.update(dataHead=str(dataHead))
+    url = "http://127.0.0.1:8000/trans"
     print(data)
     res = reqGET(url, data)
     print(res)

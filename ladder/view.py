@@ -3,6 +3,8 @@ from ladder.dao.include import *
 import json
 from ladder.task.task import *
 
+logger=Logger("view").getlog()
+
 def hello(request):
     json={"name":"lyk","no":"12548","qq_no":"97848484"}
     return HttpResponse(str(json))
@@ -37,10 +39,24 @@ def trans(request):
 
     print(type(head))
     print(body)
+
+    trans_cd=head.get("function_id")
+
+    if trans_cd is "1001":
+        logger.info("start register ")
+        res=register(body)
+
+    if trans_cd is "2001":
+        logger.info("start charge")
+        res=chargeAccount(body)
     #返回结果
-    resData={}
-    resData.update(res="success")
+    reshead={}
+    reshead.update(function_id=head.get("function_id"))
+    reshead.update(buss_no=head.get("buss_no"))
+    reshead.update(settle_dt=head.get("settle_dt"))
+    reshead.update(resp_no=res.getCode())
+    reshead.update(resp_msg=res.msg)
 
     print("head and body = {}".format(dict(head,**body)))
-    insertRequsert(dict(head,**body),resData)
-    return HttpResponse(str(resData))
+    insertRequsert(dict(head,**body),dict(res.data,**reshead))
+    return HttpResponse(str(dict(res.data,**reshead)))

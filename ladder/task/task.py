@@ -40,6 +40,7 @@ def register(data):
     user_id = addUser(data)
     openAccount(user_id)
     logger.info(" register success !! ")
+    return SUCCESS.setRet(data={"user_id":user_id})
 
 
 def addTrans(user_id, trans_at, trans_day, trans_cd):
@@ -95,7 +96,13 @@ def addTrans(user_id, trans_at, trans_day, trans_cd):
     return SUCCESS.setData(change_balance)
 
 
-def chargeAccount(user_id, trans_at, trans_day, trans_cd):
+def chargeAccount(data):
+
+    user_id=data.get("user_id")
+    trans_at=data.get("trans_at")
+    trans_day=data.get("trans_day")
+    trans_cd=data.get("trans_cd")
+
     trans = Trans()
     trans_dao = TransDao()
     balance = Balance()
@@ -105,6 +112,8 @@ def chargeAccount(user_id, trans_at, trans_day, trans_cd):
     if ret.getCode() != SUCCESS.getCode():
         logger.error("add trans Filed user_id={}".format(user_id))
         return FAILURE.setRet(msg="add trans Filed user_id={}".format(user_id))
+    current_day=ret.data.get("current_day")
+    total_balance=ret.data.get("total_balance")
     logger.info("user_id={} add trans success".format(user_id))
     # balance.setBalanceDict(change_balance)
     # print("ret.data={}".format(ret.data))
@@ -121,9 +130,13 @@ def chargeAccount(user_id, trans_at, trans_day, trans_cd):
 
         logger.error("user_id={},rollback success".format(user_id))
         return FAILURE.setRet(msg="user_id={},rollback success".format(user_id))
+    res_data={}
+    res_data.update(user_id=user_id)
+    res_data.update(current_day=current_day)
+    res_data.update(total_balance=total_balance)
 
     logger.info("charge user_id={} success".format(user_id))
-
+    return SUCCESS.setData(res_data)
 
 def autoDecreaseDay():
     balance_dao = BalanceDao()
@@ -229,10 +242,11 @@ def insertSomeServer(data):
     data = {}  #############delete
 
 
-def insertRequsert(req={}, res={}):
+def insertRequsert(req, res):
     req_no = req.get("buss_no")
     req_cd = req.get("function_id")
     req_param = str(req)
+    print("req_param={}".format(req_param))
     settle_dt = req.get("settle_dt")
     res_msg = str(res)
 
@@ -246,6 +260,7 @@ def insertRequsert(req={}, res={}):
     request_dao= RequestDao()
 
     request_dao.insertRequset(Request(data))
+
 if __name__ == "__main__":
     # data={}
     # for i in range(50):
@@ -259,8 +274,8 @@ if __name__ == "__main__":
     # trans_at = 10
     # trans_day = 30
     # trans_cd="2001"
-    #
-    # chargeAccount(user_id, trans_at, trans_day,trans_cd)
+    # data={"user_id":"201805020002","trans_at":10,"trans_day":30,"trans_cd":"2001"}
+    # chargeAccount(data)
 
     # allCharge()
     ##################
