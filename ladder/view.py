@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from ladder.dao.include import *
 import json
 from ladder.task.task import *
+from ladder.task.Charge import Charge
+from ladder.task.Register import Register
 
 logger=Logger("view").getlog()
 
@@ -31,32 +33,26 @@ def add(request):
 
 def trans(request):
     #接受结果
-    dataHeadStr=request.GET['dataHead']
-    dataBodyStr=request.GET['dataBody']
+    data_str=request.GET['data']
+    logger.info("接收参数：data_str={}".format(data_str))
+    data=eval(data_str)
 
-    head=eval(dataHeadStr)
-    body=eval(dataBodyStr)
+    logger.info("接收参数：{}".format(data))
 
-    print(type(head))
-    print(body)
-
-    trans_cd=head.get("function_id")
+    trans_cd=data.get("trans_cd")
 
     if trans_cd is "1001":
         logger.info("start register ")
-        res=register(body)
+        res = Register(data).process()
+        if res.getCode() is SUCCESS.getCode():
+            logger.info("charge success")
 
     if trans_cd is "2001":
         logger.info("start charge")
-        res=chargeAccount(body)
+        res= Charge(data).process()
+        if res.getCode() is SUCCESS.getCode():
+            logger.info("charge success")
     #返回结果
-    reshead={}
-    reshead.update(function_id=head.get("function_id"))
-    reshead.update(buss_no=head.get("buss_no"))
-    reshead.update(settle_dt=head.get("settle_dt"))
-    reshead.update(resp_no=res.getCode())
-    reshead.update(resp_msg=res.msg)
-
-    print("head and body = {}".format(dict(head,**body)))
-    insertRequsert(dict(head,**body),dict(res.data,**reshead))
-    return HttpResponse(str(dict(res.data,**reshead)))
+    print("返回参数：{}".format(res.data))
+    insertRequsert(data,res.data)
+    return HttpResponse(str(res.data))

@@ -3,7 +3,7 @@ import json
 from ladder.dao.SQLOper import SQLOper
 from ladder.lib.CheckData import CheckData
 from ladder.lib.Logger import Logger
-
+from ladder.lib.RetMsg import *
 logger=Logger().getlog()
 
 class UserDao:
@@ -25,20 +25,27 @@ class UserDao:
         # print("AAA"+user.data.get("wechat_no","")+user.data.get("qq_no",""))
         if (user.data.get("wechat_no","")+user.data.get("qq_no","")).strip().__len__() == 0:
             # print("qq号, 微信号 不同时为空")
-            logger.error("qq号, 微信号 不同时为空")
-            return
+            msg="qq号, 微信号 不同时为空"
+            logger.error(msg)
+            return FAILURE.setRet(msg=msg)
         checkRes = self.check.uniqueUserCheck(user.data, "user_id").uniqueUserCheck(user.data, "qq_no").uniqueUserCheck(
             user.data, "wechat_no").unique_check
         if (checkRes == False):
-            logger.error("{0}={1}含有重复数据，请确认后输入".format(self.check.un_unique_key,user.data[self.check.un_unique_key]))
-            return
+            msg = "{0}={1}含有重复数据，请确认后输入".format(self.check.un_unique_key,user.data[self.check.un_unique_key])
+            logger.error(msg)
+            return FAILURE.setRet(msg=msg)
+
         sqlOper = SQLOper()
         sqlRes = sqlOper.executeInsertSql(self.table_name, user.pattern, user.value_str)
 
         if (sqlRes):
-            logger.info("insert{:^25}SUCCESS".format(user.data["user_id"]))
+            msg="insert{:^25}SUCCESS".format(user.data["user_id"])
+            logger.info(msg)
+            return SUCCESS.setRet(msg=msg)
         else:
-            logger.info("insert FAIL")
+            msg = "insert FAIL"
+            logger.info(msg)
+            return SUCCESS.setRet(msg=msg)
 
     # 一个条件搜索
     def selectUserFromDBCon1(self, which, key, value):

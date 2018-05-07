@@ -15,10 +15,16 @@ class RetMsg:
 
     def setRet(self, code="", msg="", data={}):
 
-        return RetMsg(self.code, self.msg, data)
+        return RetMsg(code, msg, data)
 
     def getCode(self):
         return self.code
+
+    def getMsg(self):
+        return self.msg
+
+    def getData(self):
+        return self.data
 
     def copyDict(self,data={}):
         self.data={}

@@ -31,8 +31,14 @@ def test1():
 
     print(str.strip().__len__())
 
+def test2():
+
+    data={"user":"lyk","name":"123"}
+    print(data.get("user").__len__())
+    print(data.get("s","12").__len__())
+    print(data.get("list","").__len__())
 if __name__=='__main__':
-    test1()
+    test2()
 
 
 

@@ -71,50 +71,44 @@ def run2():
 
 
 def register():
-    data     = {}
-    dataHead = {}
-    dataBody = {}
+    data = {}
+    send_data = {}
+    trans_cd = "1001"
+    settle_dt = datetime.now().strftime('%Y%m%d')
+    buss_no = datetime.now().strftime('%Y%m%d%H%M%S%f')
 
-    function_id = "1001"
-    settle_dt   = datetime.now().strftime('%Y%m%d')
-    buss_no     = datetime.now().strftime('%Y%m%d%H%M%S%f')
+    data.update(trans_cd=trans_cd)
+    data.update(buss_no=buss_no)
+    data.update(settle_dt=settle_dt)
 
-    dataHead.update(function_id=function_id)
-    dataHead.update(buss_no=buss_no)
-    dataHead.update(settle_dt=settle_dt)
+    data_body = {"qq_name": "qwerft"}
 
-    qq_no = "11112222"
-    qq_name = "0504d_test"
-    dataBody.update(qq_no=qq_no)
-    dataBody.update(qq_name=qq_name)
-
-    data.update(dataBody=str(dataBody))
-    data.update(dataHead=str(dataHead))
+    data.update(data_body)
+    send_data.update(data=str(data))
     url = "http://127.0.0.1:8000/trans"
-    print(data)
-    res = reqGET(url, data)
+    print(send_data)
+    res = reqGET(url, send_data)
     print(res)
+
 
 def charge():
     data     = {}
-    dataHead = {}
-    dataBody = {}
-
-    function_id = "2001"
+    send_data={}
+    trans_cd = "2001"
     settle_dt   = datetime.now().strftime('%Y%m%d')
     buss_no     = datetime.now().strftime('%Y%m%d%H%M%S%f')
 
-    dataHead.update(function_id=function_id)
-    dataHead.update(buss_no=buss_no)
-    dataHead.update(settle_dt=settle_dt)
+    data.update(trans_cd=trans_cd)
+    data.update(buss_no=buss_no)
+    data.update(settle_dt=settle_dt)
 
-    dataBody={"user_id":"201805040001","trans_at":10,"trans_day":30,"trans_cd":"2001"}
+    data_body={"user_id":"201805040001","trans_at":10,"trans_day":30}
 
-    data.update(dataBody=str(dataBody))
-    data.update(dataHead=str(dataHead))
+    data.update(data_body)
+    send_data.update(data=str(data))
     url = "http://127.0.0.1:8000/trans"
-    print(data)
-    res = reqGET(url, data)
+    print(send_data)
+    res = reqGET(url, send_data)
     print(res)
 
 if __name__ == "__main__":
