@@ -81,11 +81,11 @@ def register():
     data.update(buss_no=buss_no)
     data.update(settle_dt=settle_dt)
 
-    data_body = {"qq_name": "qwerft"}
+    data_body = {"qq_name": "qwerft","wechat_no":"123"}
 
     data.update(data_body)
     send_data.update(data=str(data))
-    url = "http://127.0.0.1:8000/trans"
+    url = "http://182.150.27.208:8000/trans"
     print(send_data)
     res = reqGET(url, send_data)
     print(res)
@@ -106,7 +106,9 @@ def charge():
 
     data.update(data_body)
     send_data.update(data=str(data))
-    url = "http://127.0.0.1:8000/trans"
+
+    url = "http://182.150.27.208:8000/trans"
+    # "http://182.150.27.208:8000/"
     print(send_data)
     res = reqGET(url, send_data)
     print(res)

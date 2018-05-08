@@ -1,24 +1,24 @@
-
 import pymysql
 
-class SQLOper:
 
+class SQLOper:
     def __init__(self):
-        self.host="127.0.0.1"
-        self.user="test"
-        self.port=3306
-        self.password="test"
-        self.dbname="vpndb"
-        self.db=""
+        self.host = "127.0.0.1"
+        # self.host="182.150.27.208"
+        self.user = "test"
+        self.port = 3306
+        self.password = "test"
+        self.dbname = "vpndb"
+        self.db = ""
 
     def getDB(self):
         self.db = pymysql.connect(host=self.host, user=self.user,
                                   password=self.password, db=self.dbname, port=self.port)
+
     def closeDB(self):
         self.db.close()
 
-
-    def executeDoubleSql(self,sql1,sql2):
+    def executeDoubleSql(self, sql1, sql2):
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -34,7 +34,7 @@ class SQLOper:
             self.db.rollback()
             return results
 
-    def executeSql(self,sql):
+    def executeSql(self, sql):
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -67,12 +67,11 @@ class SQLOper:
         finally:
             self.closeDB()
 
-
-    def executeSelectCondition1(self,which, table, param, value):
+    def executeSelectCondition1(self, which, table, param, value):
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql = "select %s from %s where %s='%s'" % (which,table, param, value)
+            sql = "select %s from %s where %s='%s'" % (which, table, param, value)
             print(sql)
             cur.execute(sql)  # 执行sql语句
             results = cur.fetchall()  # 获取查询的所有记录
@@ -86,11 +85,11 @@ class SQLOper:
         finally:
             self.closeDB()
 
-    def executeSelectCondition2(self,which,table,param1,value1,param2,value2):
+    def executeSelectCondition2(self, which, table, param1, value1, param2, value2):
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql = "select %s from %s where %s='%s' and %s='%s' "  % (which,table, param1, value1,param2,value2)
+            sql = "select %s from %s where %s='%s' and %s='%s' " % (which, table, param1, value1, param2, value2)
             print(sql)
             cur.execute(sql)  # 执行sql语句
             results = cur.fetchall()  # 获取查询的所有记录
@@ -103,22 +102,22 @@ class SQLOper:
         finally:
             self.closeDB()
 
-    def executeUpdateSql(self,table,key,value,condKey,condValue):
-        ret=False
-        data={}
+    def executeUpdateSql(self, table, key, value, condKey, condValue):
+        ret = False
+        data = {}
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql="UPDATE %s SET %s='%s' WHERE %s=%s"%(table,key,value,condKey,condValue)
+            sql = "UPDATE %s SET %s='%s' WHERE %s=%s" % (table, key, value, condKey, condValue)
 
             print(sql)
             cur.execute(sql)  # 执行sql语句
             self.db.commit()
-            ret= True
+            ret = True
         except Exception as e:
             print("\033[1;31m{}\033[0m".format(e))
             self.db.rollback()
-            ret= False
+            ret = False
             raise e
         finally:
             self.closeDB()
@@ -143,11 +142,11 @@ class SQLOper:
         finally:
             self.closeDB()
 
-    def executeInsertSql(self,table,pattern,value):
+    def executeInsertSql(self, table, pattern, value):
         self.getDB()
         cur = self.db.cursor()
         try:
-            sql="insert into %s (%s)values(%s)"%(table,pattern,value)
+            sql = "insert into %s (%s)values(%s)" % (table, pattern, value)
             print(sql)
             cur.execute(sql)  # 执行sql语句
             self.db.commit()
@@ -160,8 +159,7 @@ class SQLOper:
         finally:
             self.closeDB()
 
-
-    def executeDelectSql(self,sql):
+    def executeDelectSql(self, sql):
         self.getDB()
         cur = self.db.cursor()
 
@@ -178,7 +176,6 @@ class SQLOper:
             return results
 
 
-
-if __name__=='__main__':
-    sqloper=SQLOper()
-    sql=sqloper.executeSql("select count(*) from tbl_usr")
+if __name__ == '__main__':
+    sqloper = SQLOper()
+    sql = sqloper.executeSql("select count(*) from tbl_usr")

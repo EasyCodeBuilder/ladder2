@@ -7,6 +7,11 @@ from ladder.task.Register import Register
 
 logger=Logger("view").getlog()
 
+def home(request):
+    f=open("ladder/page/home.html","r")
+    str=f.read()
+    return HttpResponse(str)
+
 def hello(request):
     json={"name":"lyk","no":"12548","qq_no":"97848484"}
     return HttpResponse(str(json))
