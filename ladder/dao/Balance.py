@@ -28,14 +28,14 @@ class BalanceDao:
         pass
 
     def countUserDB(self, user_id):
-
+        return 0#TODO dangban
         sql = "select count(*) from %s where user_id = '%s' " % (self.table_name, user_id)
         sqlOper = SQLOper()
         count = sqlOper.executeSql(sql)
         return count[0][0]
 
     def insertBalance2DB(self, balance):
-        logger.info("enter insertBalance2DB")
+        logger.info("enter")
         user_id = balance.data["user_id"]
 
         if self.countUserDB(user_id) == 0:
@@ -48,23 +48,23 @@ class BalanceDao:
                 ret = SUCCESS
             else:
                 logger.error(" insert FAIL {}={} ".format("user_id", user_id))
-                ret = FAILURE.setRet(msg=" insert FAIL {}={} ".format("user_id", user_id))
+                ret = FAILURE.setMsg(" insert FAIL {}={} ".format("user_id", user_id))
         else:
             logger.error("{}={} 已存在".format("user_id", user_id))
-            ret = FAILURE.setRet(msg="{}={} 已存在".format("user_id", user_id))
+            ret = FAILURE.setMsg("{}={} 已存在".format("user_id", user_id))
 
         return ret
     def getInsertBalance2DBSql(self, balance):
-        logger.info("enter insertBalance2DB")
+        logger.info("enter")
         user_id = balance.data["user_id"]
 
         if self.countUserDB(user_id) == 0:
 
             sql = "insert into %s (%s)values(%s)" % (self.table_name, balance.pattern, balance.value_str)
-            ret=SUCCESS.setRet(data={"sql":sql})
+            ret=SUCCESS.setData({"sql":sql})
         else:
             logger.error("{}={} 已存在".format("user_id", user_id))
-            ret = FAILURE.setRet(msg="{}={} 已存在".format("user_id", user_id))
+            ret = FAILURE.setMsg("{}={} 已存在".format("user_id", user_id))
 
         return ret
 
@@ -83,6 +83,7 @@ class BalanceDao:
         return
 
     def getBalance(self, user_id):
+        logger.info("enter")
         data = {}
 
         if self.countUserDB(user_id) == 1:
@@ -97,25 +98,26 @@ class BalanceDao:
             return SUCCESS.setData(data)
         else:
             logger.error("user_id 不存在")
-            return FAILURE.setRet(msg="user_id 不存在")
+            return FAILURE.setMsg("user_id 不存在")
 
     def updateBalance(self, user_id, data):
-
+        logger.info("enter")
         if self.countUserDB(user_id) != 1:
             logger.error("user_id 不存在")
-            return FAILURE.setRet(msg="user_id 不存在")
+            return FAILURE.setMsg("user_id 不存在")
         sqlOper = SQLOper()
         str_update = self.getUpdateStr(data)
         res = sqlOper.executeSomeUpdateSql(self.table_name, str_update, "user_id", user_id)
         if res is False:
             logger.error("update  balance  failed")
-            return FAILURE.setRet(msg="update  balance  failed")
+            return FAILURE.setMsg("update  balance  failed")
         logger.info("update user_id={} success".format(user_id))
-        return SUCCESS.setRet(msg="update user_id={} success".format(user_id), data={"res":res})
+        return SUCCESS.setMsg("update user_id={} success".format(user_id)).setData({"res":res})
 
 
 
     def getUpdateStr(self, data):
+        logger.info("enter")
         if data.__len__() == 0:
             return ""
         str = ""
@@ -129,6 +131,7 @@ class BalanceDao:
         return str[1:]
 
     def selectBalance(self,which,data):
+        logger.info("enter")
         cond = ""
         for k, v in data.items():
             cond = " %s and %s='%s' " % (cond, k, v)
@@ -142,22 +145,22 @@ class Balance:
     def __init__(self, user_id=""):
         self.data = {}
         self.keys_list = ["user_id", "current_day", "total_day", "total_balance", "over_day", "server_id"]
-
-        if user_id.__len__() != 0:
-            self.data.setdefault("user_id", user_id)
         self.pattern = ""
         self.value_str = ""
-        self.flushInsert()
+
+        if user_id.__len__() != 0:
+            self.data.update(user_id=user_id)
+            self.flushInsert()
 
     def setBalUserId(self, user_id):
         self.data["user_id"] = user_id
         self.flushInsert()
 
     def setBalanceDict(self, data):
-        # data={}
         for key in self.keys_list:
             if data.__contains__(key):
                 self.data[key] = data[key]
+                logger.info("add {}={}".format(key,data[key]))
         self.flushInsert()
 
     def flushInsert(self):

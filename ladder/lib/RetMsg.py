@@ -13,9 +13,12 @@ class RetMsg:
 
         return RetMsg(self.code,self.msg,data)
 
-    def setRet(self, code="", msg="", data={}):
+    def setMsg(self, msg):
 
-        return RetMsg(code, msg, data)
+        return RetMsg(self.code, msg, self.data)
+    def setCode(self, code):
+
+        return RetMsg(code, self.msg, self.data)
 
     def getCode(self):
         return self.code

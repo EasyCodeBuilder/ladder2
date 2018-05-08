@@ -1,5 +1,7 @@
 import pymysql
+from ladder.lib.Logger import Logger
 
+logger=Logger("sqlOper").getlog()
 
 class SQLOper:
     def __init__(self):
@@ -12,6 +14,7 @@ class SQLOper:
         self.db = ""
 
     def getDB(self):
+
         self.db = pymysql.connect(host=self.host, user=self.user,
                                   password=self.password, db=self.dbname, port=self.port)
 
@@ -19,6 +22,7 @@ class SQLOper:
         self.db.close()
 
     def executeDoubleSql(self, sql1, sql2):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -27,7 +31,7 @@ class SQLOper:
             results = cur.fetchall()
 
         except Exception as e:
-            print("\033[1;31m{}\033[0m".format(e))
+            logger.error("\033[1;31m{}\033[0m".format(e))
             raise e
         finally:
             self.closeDB()
@@ -35,6 +39,7 @@ class SQLOper:
             return results
 
     def executeSql(self, sql):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -50,6 +55,7 @@ class SQLOper:
             return results
 
     def executeSelectAll(self, table):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -68,6 +74,7 @@ class SQLOper:
             self.closeDB()
 
     def executeSelectCondition1(self, which, table, param, value):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -86,6 +93,7 @@ class SQLOper:
             self.closeDB()
 
     def executeSelectCondition2(self, which, table, param1, value1, param2, value2):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -103,6 +111,7 @@ class SQLOper:
             self.closeDB()
 
     def executeUpdateSql(self, table, key, value, condKey, condValue):
+        logger.info("enter ")
         ret = False
         data = {}
         self.getDB()
@@ -124,6 +133,7 @@ class SQLOper:
             return ret
 
     def executeSomeUpdateSql(self, table, str_update_values, condKey, condValue):
+        logger.info("enter ")
         data = {}
         self.getDB()
         cur = self.db.cursor()
@@ -143,6 +153,7 @@ class SQLOper:
             self.closeDB()
 
     def executeInsertSql(self, table, pattern, value):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -159,6 +170,7 @@ class SQLOper:
         finally:
             self.closeDB()
     def executeSqls(self, list_sql=[]):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
         try:
@@ -176,6 +188,7 @@ class SQLOper:
         finally:
             self.closeDB()
     def executeDelectSql(self, sql):
+        logger.info("enter ")
         self.getDB()
         cur = self.db.cursor()
 

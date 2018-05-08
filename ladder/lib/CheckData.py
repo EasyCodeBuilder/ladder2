@@ -17,8 +17,10 @@ class CheckData:
         if  dict.get(key,"").strip().__len__() != 0:
             sql = "select count(*) from %s where %s='%s'" % (self.user_tbl, key, dict.get(key))
             # print(sql)
-            sqlOper = SQLOper()
-            count = sqlOper.executeSql(sql)[0][0]
+            #TODO  dangban
+            # sqlOper = SQLOper()
+            # count = sqlOper.executeSql(sql)[0][0]
+            count = 0
             # print(count)
             if count > 0:
                 # print("Checking %s=%s is not only" % (key, dict.get(key)))

@@ -14,7 +14,8 @@ def home(request):
 
 def hello(request):
     json={"name":"lyk","no":"12548","qq_no":"97848484"}
-    return HttpResponse(str(json))
+    hello_str="<h1>This is hello page of LADDER</h1>"
+    return HttpResponse(hello_str)
 
 def add(request):
     data=request.GET['data']
@@ -58,6 +59,6 @@ def trans(request):
         if res.getCode() is SUCCESS.getCode():
             logger.info("charge success")
     #返回结果
-    print("返回参数：{}".format(res.data))
-    insertRequsert(data,res.data)
+    logger.info("返回参数：{}".format(res.data))
+    # insertRequsert(data,res.data)
     return HttpResponse(str(res.data))

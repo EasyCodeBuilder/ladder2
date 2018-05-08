@@ -14,14 +14,14 @@ class ServerDao:
         self.select_all_which = "server_id,ip,port,password,server_status"
 
     def countUserDB(self, server_id):
-
+        logger.info("enter")
         sql = "select count(*) from %s where server_id = '%s' " % (self.table_name, server_id)
         sqlOper = SQLOper()
         count = sqlOper.executeSql(sql)
         return count[0][0]
 
     def insertServer2DB(self, server):
-        logger.info("enter insertBalance2DB")
+        logger.info("enter")
         server_id = server.data["server_id"]
 
         if self.countUserDB(server_id) == 0:
@@ -42,6 +42,7 @@ class ServerDao:
         return ret
 
     def getServer(self, server_id):
+        logger.info("enter")
         data = {}
 
         if self.countUserDB(server_id) == 1:
@@ -59,7 +60,7 @@ class ServerDao:
             return FAILURE.setRet(msg="user_id 不存在")
 
     def updateServer(self, server_id, data):
-
+        logger.info("enter")
         if self.countUserDB(server_id) == 1:
             sqlOper = SQLOper()
             str_update = self.getUpdateStr(data)
@@ -71,6 +72,7 @@ class ServerDao:
             return FAILURE.setRet(msg="user_id 不存在")
 
     def getUpdateStr(self, data):
+        logger.info("enter")
         if data.__len__() == 0:
             return ""
         str = ""
@@ -82,6 +84,7 @@ class ServerDao:
 
         return str[1:]
     def selectServer(self,which,data):
+        logger.info("enter")
         cond = ""
         for k, v in data.items():
             cond = " %s and %s='%s' " % (cond, k, v)
@@ -92,6 +95,7 @@ class ServerDao:
         return res
 
     def changeServerPassword(self,server_id):
+        logger.info("enter")
         password_list=["qwertg1597","qasxzc1112","okmjio4565","uhbnji7897","tfcxdr8526","wsdfgh4545","uhbvcx8889",
                        "rfvcxd5552","hjkmnb4745","bhgvcf6566","rfgtyh7187","dcvfre8789","dcvbnm5856","cfghyt7978"]
         data={}

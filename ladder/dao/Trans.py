@@ -17,7 +17,7 @@ class TransDao:
 
     # 插入新交易，同步修改余额表
     def insertTrans(self, trans):
-
+        logger.info("enter")
         user_id=trans.data["user_id"]
         trans_cd=trans.data["trans_cd"]
 
@@ -31,7 +31,7 @@ class TransDao:
             return FAILURE.setRet(msg=" insert FAIL {}={} ".format("user_id", user_id))
 
     def getTrans(self,data):
-
+        logger.info("enter")
         cond=""
         for k,v in data.items():
             cond=" %s and %s='%s' "%(cond,k,v)

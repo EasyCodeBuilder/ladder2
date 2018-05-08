@@ -24,40 +24,39 @@ class Register:
         if (self.data.get("qq_no", "") + self.data.get("wechat_no", "")).__len__() == 0:
             msg = "qq号 与 微信号 都不存在"
             logger.error(msg)
-            return FAILURE.setRet(msg=msg)
+            return FAILURE.setMsg(msg)
         for key in self.req_list:
             if self.data.__contains__(key) is False:
-                msg=" register 参数检查失败"
+                msg = " register 参数检查失败"
                 logger.error(msg)
-                return FAILURE.setRet(msg=msg)
+                return FAILURE.setMsg(msg)
         return SUCCESS
 
     def process(self):
 
         ret = self.checkParam()
-        if ret.getCode() !=  SUCCESS.getCode():
+        if ret.getCode() != SUCCESS.getCode():
             logger.error("param is wrong ")
             self.setReturn(ret)
-            return ret.setRet(data=self.rsp_data)
+            return ret.setData(self.rsp_data)
 
         ret = self.localProcess()
         if ret.getCode() != SUCCESS.getCode():
             logger.error("processing  Done ")
             self.setReturn(ret)
-            return ret.setRet(data=self.rsp_data)
-        msg="注册成功"
-        self.setReturn(SUCCESS.setRet(msg=msg,data=self.rsp_data))
+            return ret.setData(self.rsp_data)
+        msg = "注册成功"
+        self.setReturn(SUCCESS.setMsg(msg).setData(self.rsp_data))
 
-        return SUCCESS.setRet(msg=msg,data=self.rsp_data)
+        return SUCCESS.setMsg(msg).setData(self.rsp_data)
 
     def localProcess(self):
 
-        ret = self.register()
+        ret = self.register2()
         if ret.getCode() != SUCCESS.getCode():
             logger.error("register  failed ")
-            print("111"+ret.msg)
             return ret
-            # return FAILURE.setRet(msg="register  failed")
+            # return FAILURE.setMsg("register  failed")
         return SUCCESS
         # self.rsp_data.update(trans_cd=self.data.get("trans_cd"))
         # self.rsp_data.update(buss_no=self.data.get("buss_no"))
@@ -76,7 +75,7 @@ class Register:
         if isinstance(count, int) is False:
             msg = "db select failed"
             logger.error(msg)
-            return FAILURE.setRet(msg=msg)
+            return FAILURE.setMsg(msg)
         user_id = "%s%04d" % (settle_dt, int(count) + 1)
         user_data.update(user_id=user_id)
 
@@ -88,12 +87,12 @@ class Register:
 
         res = self.user_dao.insertUser2DB(self.user)
         if res.getCode() != SUCCESS.getCode():
-            print("222"+res.msg)
+            print("222" + res.msg)
             return res
         self.user_id = user_id
         return SUCCESS.setData({"user_id": user_id})
 
-    def setReturn(self,ret):
+    def setReturn(self, ret):
 
         self.rsp_data.update(trans_cd=self.data.get("trans_cd"))
         self.rsp_data.update(buss_no=self.data.get("buss_no"))
@@ -111,7 +110,7 @@ class Register:
             return SUCCESS
         else:
             msg = " open account failed"
-            return ret.setRet(msg=msg)
+            return ret.setMsg(msg)
 
     def register(self):
         """
@@ -127,17 +126,17 @@ class Register:
             return ret
 
         logger.info(" register success !! ")
-        return SUCCESS.setRet(data={"user_id": self.user_id})
+        return SUCCESS.setData({"user_id": self.user_id})
 
     def register2(self):
-        sql_list=[]
+        sql_list = []
         user_data = {}
         settle_dt = self.data.get("settle_dt")
         count = self.user_dao.countUserDB(settle_dt)
         if isinstance(count, int) is False:
             msg = "db select failed"
             logger.error(msg)
-            return FAILURE.setRet(msg=msg)
+            return FAILURE.setMsg(msg)
         user_id = "%s%04d" % (settle_dt, int(count) + 1)
         user_data.update(user_id=user_id)
 
@@ -146,21 +145,31 @@ class Register:
                 user_data[key] = self.data[key]
 
         self.user.setUser(user_data)
-        ret=self.user_dao.getInsertUser2DBSql(self.user)
-        if ret.getCode()!= SUCCESS.getCode():
+        ret = self.user_dao.getInsertUser2DBSql(self.user)
+        # logger.info("code={}".format(ret.getCode()))
+        if ret.getCode() != SUCCESS.getCode():
+            logger.error(ret.msg)
             return ret
+        self.user_id = user_id
         sql_list.append(ret.data.get("sql"))
 
         data = {}
         data.update(user_id=self.user_id)
+        # print(data)
         self.balance.setBalanceDict(data)
-        ret=self.balance_dao.getInsertBalance2DBSql(self.balance)
-        if ret.getCode()!= SUCCESS.getCode():
+        # print("pattern={}".format(self.balance.pattern))
+        # print("value_str={}".format(self.balance.value_str))
+        ret = self.balance_dao.getInsertBalance2DBSql(self.balance)
+        if ret.getCode() != SUCCESS.getCode():
+            logger.error(ret.msg)
             return ret
         sql_list.append(ret.data.get("sql"))
 
-        sqlOper=SQLOper()
-        res=sqlOper.executeSqls(sql_list)
-        if res :
-            return SUCCESS.setRet(data={"user_id":user_id})
-        return FAILURE.getMsg("数据库插入失败 注册失败")
+        # sqlOper=SQLOper()
+        # res=sqlOper.executeSqls(sql_list)
+        # if res :
+        #     return SUCCESS.setData({"user_id":user_id})
+        # return FAILURE.getMsg("数据库插入失败 注册失败")
+
+        logger.info("sql_list={}".format(sql_list))
+        return SUCCESS

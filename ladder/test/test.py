@@ -37,6 +37,9 @@ def test2():
     print(data.get("user").__len__())
     print(data.get("s","12").__len__())
     print(data.get("list","").__len__())
+
+
+
 if __name__=='__main__':
     test2()
 
