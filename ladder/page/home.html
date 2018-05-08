@@ -18,6 +18,10 @@
             var qq_no=document.getElementById("qq_no").value;
             var res=checkqqNo(qq_no);
             if (res=="0"){return}
+            var url="http://127.0.0.1:8000/trans/";
+            var data='{"qq_no":"7941154100","trans_cd":"1001","buss_no":"1215488787878737","settle_dt":"20180508"}';
+            doGet(url,data)
+
             alert(qq_no)
          }
      </script>

@@ -54,6 +54,19 @@ class BalanceDao:
             ret = FAILURE.setRet(msg="{}={} 已存在".format("user_id", user_id))
 
         return ret
+    def getInsertBalance2DBSql(self, balance):
+        logger.info("enter insertBalance2DB")
+        user_id = balance.data["user_id"]
+
+        if self.countUserDB(user_id) == 0:
+
+            sql = "insert into %s (%s)values(%s)" % (self.table_name, balance.pattern, balance.value_str)
+            ret=SUCCESS.setRet(data={"sql":sql})
+        else:
+            logger.error("{}={} 已存在".format("user_id", user_id))
+            ret = FAILURE.setRet(msg="{}={} 已存在".format("user_id", user_id))
+
+        return ret
 
     def selectStop(self):
         sql = "select user_id from tbl_balance WHERE user_status=0 and server_id!=null;"

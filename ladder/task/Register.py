@@ -128,3 +128,39 @@ class Register:
 
         logger.info(" register success !! ")
         return SUCCESS.setRet(data={"user_id": self.user_id})
+
+    def register2(self):
+        sql_list=[]
+        user_data = {}
+        settle_dt = self.data.get("settle_dt")
+        count = self.user_dao.countUserDB(settle_dt)
+        if isinstance(count, int) is False:
+            msg = "db select failed"
+            logger.error(msg)
+            return FAILURE.setRet(msg=msg)
+        user_id = "%s%04d" % (settle_dt, int(count) + 1)
+        user_data.update(user_id=user_id)
+
+        for key in self.user_list:
+            if self.data.__contains__(key):
+                user_data[key] = self.data[key]
+
+        self.user.setUser(user_data)
+        ret=self.user_dao.getInsertUser2DBSql(self.user)
+        if ret.getCode()!= SUCCESS.getCode():
+            return ret
+        sql_list.append(ret.data.get("sql"))
+
+        data = {}
+        data.update(user_id=self.user_id)
+        self.balance.setBalanceDict(data)
+        ret=self.balance_dao.getInsertBalance2DBSql(self.balance)
+        if ret.getCode()!= SUCCESS.getCode():
+            return ret
+        sql_list.append(ret.data.get("sql"))
+
+        sqlOper=SQLOper()
+        res=sqlOper.executeSqls(sql_list)
+        if res :
+            return SUCCESS.setRet(data={"user_id":user_id})
+        return FAILURE.getMsg("数据库插入失败 注册失败")

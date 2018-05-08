@@ -49,6 +49,28 @@ class UserDao:
             logger.info(msg)
             return SUCCESS.setRet(msg=msg)
 
+    def getInsertUser2DBSql(self, user):
+        print("insert oper")
+        # print("AAA"+user.data.get("wechat_no","")+user.data.get("qq_no",""))
+        if (user.data.get("wechat_no", "") + user.data.get("qq_no", "")).strip().__len__() == 0:
+            # print("qq号, 微信号 不同时为空")
+            msg = "qq号, 微信号 不同时为空"
+            logger.error(msg)
+            return FAILURE.setRet(msg=msg)
+        checkRes = self.check.uniqueUserCheck(user.data, "user_id").uniqueUserCheck(user.data,
+                                                                                    "qq_no").uniqueUserCheck(
+            user.data, "wechat_no").unique_check
+        if (checkRes == False):
+            msg = "{0}={1}含有重复数据，请确认后输入".format(self.check.un_unique_key, user.data[self.check.un_unique_key])
+            logger.error(msg)
+            return FAILURE.setRet(msg=msg)
+
+        sqlOper = SQLOper()
+        # sqlRes = sqlOper.executeInsertSql(self.table_name, user.pattern, user.value_str)
+        sql = "insert into %s (%s)values(%s)" % (self.table_name, user.pattern, user.value_str)
+
+        return SUCCESS.setRet(data={"sql":sql})
+
     # 一个条件搜索
     def selectUserFromDBCon1(self, which, key, value):
         print("select oper")

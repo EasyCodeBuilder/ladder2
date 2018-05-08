@@ -158,7 +158,23 @@ class SQLOper:
             raise e
         finally:
             self.closeDB()
+    def executeSqls(self, list_sql=[]):
+        self.getDB()
+        cur = self.db.cursor()
+        try:
+            for i in range(list_sql.__len__()):
+                sql=list_sql[i]
+                cur.execute(sql)  # 执行sql语句
 
+            self.db.commit()
+            return True
+        except Exception as e:
+            print("\033[1;31m{}\033[0m".format(e))
+            self.db.rollback()
+            return False
+            raise e
+        finally:
+            self.closeDB()
     def executeDelectSql(self, sql):
         self.getDB()
         cur = self.db.cursor()
