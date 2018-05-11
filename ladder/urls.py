@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from ladder import view
+
 urlpatterns = [
-#    path('admin/', admin.site.urls),
-    url(r'^$',view.hello),
-    url(r'^add/$',view.add),
-    url(r'^trans/$',view.trans),
-    url(r'^home/$',view.home)
+    #    path('admin/', admin.site.urls),
+    url(r'^$', view.hello),
+    url(r'^add/$', view.add),
+    url(r'^trans/$', view.trans),
+    url(r'^home/$', view.home),
+    url(r'^register/$', view.register)
 ]

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+    <meta name="viewport" content="width=device-width,  initial-scale=1"/>
+
+    <title>zhuce</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"/>
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+    function btnclick() {
+
+        var j = {};
+        var list = ["qq_no", "wechat_no", "qq_name", "wechat_name", "phone_no"];
+        for (var i = 0; i < list.length; i++) {
+            var key = list[i]
+            var val = document.getElementById(key).value;
+            if (val.length === 0) {
+                continue
+            }
+            j[key] = val;
+        }
+
+        var res = checkqqNo(j.qq_no);
+        if (res === "0") {
+            return
+        }
+        var data = JSON.stringify(j)
+        console.log("j=" + data)
+        var url = "http://127.0.0.1:8000/register/";
+        res = doGet(url, data)
+        console.log(res)
+        //   console.log(res.responseText)
+    }
+
+</script>
+<div data-role="page" id="e1">
+    <div data-role="header">
+        <h1>reg</h1>
+    </div>
+    <div data-role="content">
+        <div>
+            qq<input type="text" id="qq_no" name="qq_no" value="123456">
+            qq name<input type="text" id="qq_name" name="qq_name" value=""/>
+            wechat no<input type="text" id="wechat_no" name="wechat_no" value="qwed999"/>
+            WeChat name<input type="text" id="wechat_name" name="wechat_name" value=""/>
+            phone no<input type="text" id="phone_no" name="phone_no" value=""/>
+            <button onclick="btnclick()">register</button>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <a href="index.html">back</a>>
+    </div>
+</div>
+</body>
+</html>

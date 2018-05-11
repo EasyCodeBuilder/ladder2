@@ -24,7 +24,28 @@ class RequestDao:
         else:
             logger.error(" insert FAIL {}={} ".format("req_no", request.data['req_no']))
             ret = FAILURE.setRet(msg=" insert FAIL {}={} ".format("req_no", request.data['req_no']))
+    def getInsertRequsetSql(self,request):
 
+        sql = "insert into %s (%s)values(%s)" % (self.table_name, request.pattern, request.value_str)
+        return SUCCESS.setData({"sql":sql})
+
+    def getInsertRequsertSql(self,req, res):
+        req_no = req.get("buss_no")
+        req_cd = req.get("function_id")
+        req_param = str(req)
+        print("req_param={}".format(req_param))
+        settle_dt = req.get("settle_dt")
+        res_msg = str(res)
+
+        data = {}
+        data.update(req_no=req_no)
+        data.update(req_cd=req_cd)
+        data.update(req_param=req_param)
+        data.update(settle_dt=settle_dt)
+        data.update(res_msg=res_msg)
+
+        res = self.getInsertRequsetSql(Request(data))
+        return res
 
 class Request:
 

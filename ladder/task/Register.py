@@ -18,6 +18,7 @@ class Register:
         self.user_dao = UserDao()
         self.balance_dao = BalanceDao()
         self.balance = Balance()
+        self.request_dao=RequestDao()
 
     def checkParam(self):
 
@@ -46,7 +47,7 @@ class Register:
             self.setReturn(ret)
             return ret.setData(self.rsp_data)
         msg = "注册成功"
-        self.setReturn(SUCCESS.setMsg(msg).setData(self.rsp_data))
+        self.setReturn(ret.setMsg(msg))
 
         return SUCCESS.setMsg(msg).setData(self.rsp_data)
 
@@ -55,9 +56,9 @@ class Register:
         ret = self.register2()
         if ret.getCode() != SUCCESS.getCode():
             logger.error("register  failed ")
-            return ret
+        return ret
             # return FAILURE.setMsg("register  failed")
-        return SUCCESS
+
         # self.rsp_data.update(trans_cd=self.data.get("trans_cd"))
         # self.rsp_data.update(buss_no=self.data.get("buss_no"))
         # self.rsp_data.update(resp_no=ret.getCode())
@@ -164,6 +165,13 @@ class Register:
             logger.error(ret.msg)
             return ret
         sql_list.append(ret.data.get("sql"))
+        res_data = {"user_id": user_id}
+
+        ret = self.request_dao.getInsertRequsertSql(data,res_data)
+        if ret.getCode() != SUCCESS.getCode():
+            logger.error(ret.msg)
+            return ret
+        sql_list.append(ret.data.get("sql"))
 
         # sqlOper=SQLOper()
         # res=sqlOper.executeSqls(sql_list)
@@ -172,4 +180,4 @@ class Register:
         # return FAILURE.getMsg("数据库插入失败 注册失败")
 
         logger.info("sql_list={}".format(sql_list))
-        return SUCCESS
+        return SUCCESS.setData(res_data)
